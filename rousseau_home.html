@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>让·雅克·卢梭 · 与启蒙时代的思想者对话</title>
+<style>
+  :root{
+    --bg:#F7F4ED; --ink:#2C2C2C; --accent:#916F48;
+    --accent-soft:rgba(145,111,72,.12); --line:#D9D2C7; --card:#FFFCF7;
+    --muted:#6E6A62;
+    --serif:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun",Georgia,serif;
+    --sans:"Noto Sans SC","Source Han Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    --shadow:0 10px 30px rgba(44,44,44,.06); --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(1200px 600px at 50% -10%, rgba(145,111,72,.10), transparent 60%), var(--bg);
+    color:var(--ink); font-family:var(--sans); line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; display:flex; flex-direction:column;
+  }
+  .wrap{width:100%; max-width:760px; margin:0 auto; padding:clamp(24px,5vw,56px) clamp(16px,4vw,32px) 24px; flex:1; display:flex; flex-direction:column;}
+  .masthead{display:flex; flex-direction:column; align-items:center; text-align:center;}
+  .portrait{width:clamp(100px,20vw,140px); height:clamp(100px,20vw,140px); border-radius:50%; object-fit:cover; border:2px solid var(--accent); box-shadow:0 0 0 8px var(--bg),0 0 0 9px var(--line),var(--shadow); background:#e6decf;}
+  .title{font-family:var(--serif); font-weight:700; font-size:clamp(1.5rem,4vw,2.1rem); letter-spacing:.04em; margin:clamp(16px,3vw,24px) 0 2px;}
+  .subtitle{font-family:var(--serif); font-size:clamp(.85rem,2vw,.98rem); color:var(--accent); letter-spacing:.12em; margin:0 0 16px;}
+  .intro{max-width:560px; color:var(--muted); font-size:clamp(.88rem,2vw,.95rem); margin:0 auto 20px;}
+  .intro b{color:var(--ink);}
+
+  .sec-title{font-family:var(--serif); font-size:.9rem; letter-spacing:.14em; color:var(--accent); margin:0 0 10px; display:flex; align-items:center; gap:10px;}
+  .sec-title::after{content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--line),transparent);}
+  .sec-title .new-chat{margin-left:auto; margin-right:0; border:1px solid var(--line); background:var(--card); color:var(--muted); font-size:.78rem; padding:4px 10px; border-radius:999px; cursor:pointer; font-family:var(--sans); letter-spacing:0;}
+  .sec-title .new-chat:hover{border-color:var(--accent); color:var(--accent);}
+
+  .modes{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px;}
+  .mode-btn{appearance:none; border:1px solid var(--line); background:var(--card); color:var(--ink); font-family:var(--sans); font-size:clamp(.88rem,2vw,.98rem); padding:10px 0; border-radius:var(--radius); cursor:pointer; transition:all .2s;}
+  .mode-btn small{display:block; font-size:.7em; color:var(--muted);}
+  .mode-btn:hover{border-color:var(--accent); background:var(--accent-soft);}
+  .mode-btn.active{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .mode-btn.active small{color:rgba(255,255,255,.85);}
+
+  .prompts{display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:16px;}
+  .prompt-card{border:1px solid var(--line); background:var(--card); border-radius:var(--radius); padding:10px 12px; cursor:pointer; font-size:clamp(.85rem,2vw,.94rem); transition:all .2s;}
+  .prompt-card .tag{display:block; font-size:.7em; letter-spacing:.1em; color:var(--accent); margin-bottom:2px;}
+  .prompt-card:hover{border-color:var(--accent); background:#fff;}
+
+  .chat-box{flex:1; min-height:200px; max-height:52vh; overflow-y:auto; border:1px solid var(--line); border-radius:var(--radius); background:var(--card); padding:14px; margin-bottom:12px; display:flex; flex-direction:column; gap:12px;}
+  .msg{max-width:92%; padding:10px 14px; border-radius:12px; font-size:clamp(.88rem,2vw,.96rem); white-space:pre-wrap; word-break:break-word;}
+  .msg.user{align-self:flex-end; background:var(--accent); color:#fff; border-bottom-right-radius:3px;}
+  .msg.bot{align-self:flex-start; background:#F2EDE4; border:1px solid var(--line); border-bottom-left-radius:3px;}
+  .msg.bot img{max-width:100%; border-radius:8px; margin-top:8px; display:block;}
+  .msg.sys{align-self:center; background:transparent; color:var(--muted); font-size:.8rem;}
+
+  .composer{display:flex; gap:8px; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:999px; padding:4px 4px 4px 16px; box-shadow:var(--shadow);}
+  .composer input{flex:1; border:0; background:transparent; outline:none; font-family:var(--sans); font-size:clamp(.9rem,2vw,1rem); color:var(--ink); padding:9px 0; min-width:0;}
+  .composer input::placeholder{color:#A9A29A;}
+  .send-btn{border:0; cursor:pointer; width:42px; height:42px; border-radius:50%; background:var(--accent); color:#fff; font-size:1.1rem; flex:none; transition:all .2s;}
+  .send-btn:hover{background:#7d5f3d;}
+  .send-btn:disabled{opacity:.45; cursor:not-allowed;}
+
+  .cfg-row{display:flex; gap:8px; margin-bottom:10px;}
+  .cfg-row input{flex:1; border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-family:var(--sans); font-size:.85rem; background:var(--card); outline:none;}
+  .cfg-row input:focus{border-color:var(--accent);}
+  .cfg-hint{font-size:.76rem; color:var(--muted); margin:0 0 14px;}
+  .footnote{text-align:center; color:#A9A29A; font-size:.76rem; margin-top:14px;}
+
+  @media (max-width:560px){
+    .modes{grid-template-columns:repeat(2,1fr);}
+    .prompts{grid-template-columns:1fr;}
+    .msg{max-width:96%;}
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="masthead">
+    <img class="portrait" src="rousseau_portrait.jpg" alt="卢梭肖像">
+    <h1 class="title">让 · 雅克 · 卢梭</h1>
+    <p class="subtitle">与启蒙时代的思想者对话</p>
+    <p class="intro">谈<b>自然与情感</b>、释读<b>原著</b>、为信念<b>辩驳</b>，或袒露<b>孤独与悔恨</b>。</p>
+  </header>
+
+  <div class="cfg-row">
+    <input id="cfgToken" type="password" placeholder="填入 Coze API Token（保存在本机 localStorage）">
+    <input id="cfgBot" type="text" placeholder="bot_id（留空则使用默认 ID）" style="max-width:240px;">
+  </div>
+  <p class="cfg-hint">优先级：输入框 > 代码内默认值；Token 仅保存在本机，请勿公开分享此页面。</p>
+
+  <div class="sec-title">对话模式 <button class="new-chat" id="newChatBtn">新对话</button></div>
+  <div class="modes" id="modes">
+    <button class="mode-btn" data-mode="闲谈">🍃 闲谈<small>随笔·书信</small></button>
+    <button class="mode-btn" data-mode="辩论">⚔️ 辩论<small>交锋·反驳</small></button>
+    <button class="mode-btn" data-mode="释经">📜 释经<small>原文·本意</small></button>
+    <button class="mode-btn" data-mode="忏悔">🕯️ 忏悔<small>坦露·悔恨</small></button>
+  </div>
+
+  <div class="sec-title">快捷开始</div>
+  <div class="prompts" id="prompts">
+    <div class="prompt-card" data-q="谈谈你对自然状态的理解"><span class="tag">自然</span>自然状态中的人，究竟过着怎样的生活？</div>
+    <div class="prompt-card" data-q="我们辩论「公意」是否存在"><span class="tag">辩证</span>我们辩论「公意」是否真的存在</div>
+    <div class="prompt-card" data-q="为我释读《社会契约论》开篇"><span class="tag">释经</span>为我释读《社会契约论》开篇</div>
+    <div class="prompt-card" data-q="来一场忏悔式对话，听听你的遗憾"><span class="tag">心迹</span>来一场忏悔式对话</div>
+  </div>
+
+  <div class="chat-box" id="chatBox">
+    <div class="msg sys">填入 Token 后即可开始对话。历史会自动保存在本机。</div>
+  </div>
+
+  <div class="composer">
+    <input id="input" type="text" placeholder="向卢梭提问……" autocomplete="off">
+    <button class="send-btn" id="sendBtn" title="发送">➤</button>
+  </div>
+  <p class="footnote">Directly speak to a <b>让·雅克·卢梭</b> · 十八世纪启蒙思想</p>
+</main>
+
+<script>
+(function(){
+  /* 
+   * 【默认 bot_id】
+   * 如果页面输入框留空，将使用此 ID。
+   * 如果用户在页面输入框填了内容，则优先使用用户填的。
+   */
+  var FIXED_BOT_ID = "7700215680201359400";
+
+  var TOKEN_KEY='coze_rousseau_token', BOT_KEY='coze_rousseau_bot', CONV_KEY='coze_rousseau_conv';
+  var API='https://api.coze.cn/v3/chat';
+
+  var cfgToken=document.getElementById('cfgToken');
+  var cfgBot=document.getElementById('cfgBot');
+  var input=document.getElementById('input');
+  var sendBtn=document.getElementById('sendBtn');
+  var chatBox=document.getElementById('chatBox');
+  var modes=document.getElementById('modes');
+  var prompts=document.getElementById('prompts');
+  var newChatBtn=document.getElementById('newChatBtn');
+
+  // 恢复历史配置
+  cfgToken.value=localStorage.getItem(TOKEN_KEY)||'';
+  cfgBot.value=localStorage.getItem(BOT_KEY)||'';
+  
+  cfgToken.addEventListener('change',function(){localStorage.setItem(TOKEN_KEY,cfgToken.value.trim());});
+  cfgBot.addEventListener('change',function(){localStorage.setItem(BOT_KEY,cfgBot.value.trim());});
+
+  modes.addEventListener('click',function(e){
+    var btn=e.target.closest('.mode-btn'); if(!btn)return;
+    Array.prototype.forEach.call(modes.children,function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    input.value=btn.dataset.mode; input.focus();
+  });
+  prompts.addEventListener('click',function(e){
+    var card=e.target.closest('.prompt-card'); if(!card)return;
+    input.value=card.dataset.q; input.focus();
+  });
+
+  newChatBtn.addEventListener('click',function(){
+    localStorage.removeItem(CONV_KEY);
+    chatBox.innerHTML='<div class="msg sys">已开启新对话。上下文已清空。</div>';
+    input.focus();
+  });
+
+  function addMsg(text,role){
+    var d=document.createElement('div'); d.className='msg '+role;
+    d.textContent=text; chatBox.appendChild(d);
+    chatBox.scrollTop=chatBox.scrollHeight; return d;
+  }
+
+  function isSystemIcon(url){
+    var u=url.toLowerCase();
+    if(/icon|logo|avatar|thumb|plugin|workflow|default/i.test(u)) return true;
+    if(/_(30|50|100)x(30|50|100)/.test(u)) return true;
+    return false;
+  }
+
+  function collectImageUrls(obj,out){
+    out=out||[];
+    if(obj===null||obj===undefined)return out;
+    if(typeof obj==='string'){
+      var s=obj.trim();
+      if(s.charAt(0)==='{'||s.charAt(0)==='['){
+        try{ collectImageUrls(JSON.parse(s),out); return out; }catch(e){}
+      }
+      var mdRe=/!\[[^\]]*\]\((https?:\/\/[^\s)]+)\)/g, mdM;
+      while((mdM=mdRe.exec(s))){
+        if(!isSystemIcon(mdM[1])) out.push(mdM[1]);
+      }
+      var re=/https?:\/\/[^\s"'<>\\)\]\}]+/g, m;
+      while((m=re.exec(s))){
+        var u=m[0];
+        if(isSystemIcon(u)) continue;
+        if(/\.(png|jpe?g|webp|gif|bmp)(\?|#|$)/i.test(u)||/image|img|picture|photo|oss|cdn|storage|byteimg/i.test(u)) out.push(u);
+      }
+      return out;
+    }
+    if(Array.isArray(obj)){ obj.forEach(function(x){collectImageUrls(x,out);}); return out; }
+    if(typeof obj==='object'){ Object.keys(obj).forEach(function(k){collectImageUrls(obj[k],out);}); }
+    return out;
+  }
+
+  function pickText(raw){
+    if(raw===null||raw===undefined) return '';
+    var s=String(raw);
+    try{
+      var parsed=JSON.parse(s);
+      if(typeof parsed==='string') return parsed;
+      if(parsed && typeof parsed.body==='string') return parsed.body;
+      if(parsed && typeof parsed.text==='string') return parsed.text;
+      if(parsed && typeof parsed.content==='string') return parsed.content;
+    }catch(e){}
+    return s;
+  }
+
+  function sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }
+
+  async function pollChat(convId,chatId,token,botEl){
+    var FINAL={'completed':1,'failed':1,'canceled':1,'requires_action':1};
+    for(var i=0;i<180;i++){
+      await sleep(1000);
+      var u='https://api.coze.cn/v3/chat/retrieve?conversation_id='+encodeURIComponent(convId)+'&chat_id='+encodeURIComponent(chatId);
+      var r;
+      try{
+        r=await fetch(u,{headers:{'Authorization':'Bearer '+token}});
+      }catch(e){
+        continue;
+      }
+      var j=await r.json();
+      var st=(j && j.data && j.data.status) || 'unknown';
+      
+      if(botEl) {
+        var sec = i + 1;
+        var waitTip = sec > 15 ? '（生成图片较慢，请耐心等待）' : '';
+        botEl.textContent='卢梭正在沉思… 已等待 '+sec+' 秒 '+waitTip;
+      }
+      
+      if(FINAL[st]) {
+        console.log('poll 结束，最终状态:', st);
+        return j;
+      }
+    }
+    return {data:{status:'timeout',conversation_id:convId,id:chatId}};
+  }
+
+  async function fetchMessages(convId,chatId,token){
+    var u='https://api.coze.cn/v3/chat/message/list?conversation_id='+encodeURIComponent(convId)+'&chat_id='+encodeURIComponent(chatId);
+    var r=await fetch(u,{headers:{'Authorization':'Bearer '+token}});
+    var j=await r.json();
+    return (j && j.data) || [];
+  }
+
+  async function send(){
+    var text=input.value.trim(); if(!text)return;
+    var token=cfgToken.value.trim();
+    
+    // 逻辑：优先取输入框里的值，如果输入框为空，则使用代码顶部的默认 FIXED_BOT_ID
+    var bot = cfgBot.value.trim() || FIXED_BOT_ID;
+
+    if(!token){ addMsg('请先填入 API Token。','sys'); return; }
+    if(!bot){ addMsg('请填入 bot_id 或在代码中配置默认 ID。','sys'); return; }
+
+    addMsg(text,'user');
+    input.value=''; sendBtn.disabled=true;
+    var botEl=addMsg('卢梭正在沉思…','bot');
+
+    var convId=localStorage.getItem(CONV_KEY)||'';
+    var url=API;
+    if(convId) url+='?conversation_id='+encodeURIComponent(convId);
+
+    var body={
+      bot_id: bot,
+      user_id:'rousseau_local_demo',
+      stream:false,
+      auto_save_history:true,
+      additional_messages:[{role:'user',content:text,content_type:'text'}]
+    };
+
+    try{
+      var resp=await fetch(url,{
+        method:'POST',
+        headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+        body:JSON.stringify(body)
+      });
+      if(!resp.ok){
+        var errText=await resp.text();
+        botEl.textContent='请求失败（HTTP '+resp.status+'）：'+errText.slice(0,400);
+        return;
+      }
+      var data=await resp.json();
+      
+      if(data && data.code && data.code!==0){
+        botEl.textContent='接口返回错误（code '+data.code+'）：'+(data.msg||'');
+        return;
+      }
+
+      var convIdFinal=(data && data.data && data.data.conversation_id)||convId;
+      var chatIdFinal=(data && data.data && data.data.id);
+      var status=(data && data.data && data.data.status);
+
+      if(status && status!=='completed' && status!=='failed' && status!=='canceled'){
+        data=await pollChat(convIdFinal,chatIdFinal,token,botEl);
+        status=(data && data.data && data.data.status);
+        convIdFinal=(data && data.data && data.data.conversation_id)||convIdFinal;
+        chatIdFinal=(data && data.data && data.data.id)||chatIdFinal;
+      }
+
+      var msgs=[];
+      if(convIdFinal && chatIdFinal){
+        try{ msgs=await fetchMessages(convIdFinal,chatIdFinal,token); }
+        catch(e){ console.warn('message/list 失败:',e); }
+      }
+      if(!msgs || !msgs.length){
+        if(data && data.data && data.data.messages) msgs=data.data.messages;
+      }
+
+      var textParts=[], imgs=[];
+      (msgs||[]).forEach(function(m){
+        var t=m.type||'';
+        var raw=String(m.content||'');
+        if(t==='answer'){
+          var s=pickText(raw);
+          if(s && s.trim()) textParts.push(s.trim());
+        }
+        collectImageUrls(raw,imgs);
+      });
+
+      if(!textParts.length && msgs && msgs.length){
+        msgs.forEach(function(m){
+          var t=m.type||'';
+          if(t==='verbose'||t==='tool_response'||t==='tool_request'||t==='function_call') return;
+          var raw=String(m.content||'');
+          var s=pickText(raw);
+          if(s && s.trim()) textParts.push(s.trim());
+        });
+      }
+
+      imgs=imgs.filter(function(u,i){return imgs.indexOf(u)===i;});
+
+      if(status==='timeout' && !textParts.length && !imgs.length){
+        botEl.textContent='等待超时（已超 3 分钟）。后台可能处理失败或网络异常。';
+      }else if(!textParts.length && !imgs.length){
+        botEl.textContent='（对话已完成，但未提取到正文或有效图片。控制台已打印原始返回。）';
+      }else{
+        botEl.textContent=textParts.join('\n\n')||'';
+        
+        // 展示第一张图
+        imgs.slice(0,1).forEach(function(src){
+          var img=document.createElement('img'); img.src=src; img.alt='生成图片'; img.loading='lazy';
+          img.onerror=function(){ this.style.display='none'; };
+          botEl.appendChild(img);
+        });
+      }
+
+      if(convIdFinal) localStorage.setItem(CONV_KEY,convIdFinal);
+
+    }catch(e){
+      botEl.textContent='网络或跨域错误：'+e.message;
+      console.error(e);
+    }finally{
+      sendBtn.disabled=false;
+      chatBox.scrollTop=chatBox.scrollHeight;
+    }
+  }
+
+  sendBtn.addEventListener('click',send);
+  input.addEventListener('keydown',function(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} });
+})();
+</script>
+</body>
+</html>
